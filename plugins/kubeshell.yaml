@@ -1,0 +1,13 @@
+kube_shell:
+  shortCut: Ctrl-O
+  scopes:
+    - all
+  description: |
+    Kube-shell
+  command: bash
+  background: false
+  args:
+    - -c
+    - |
+      export KUBECONFIG=$KUBECONFIG
+      bash --rcfile <(cat ~/.bashrc; echo "PS1=\$PS1'(k9s:${CLUSTER}) '")
