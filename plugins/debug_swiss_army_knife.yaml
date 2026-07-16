@@ -4,15 +4,23 @@ debug_swiss_army_knife:
     - containers
   description: |
     Debug
-  command: kubectl
+  command: bash
   background: true
   args:
-    - --kubeconfig=$KUBECONFIG
-    - --context=$CONTEXT
-    - --namespace=$NAMESPACE
-    - debug
-    - $NAME
-    - --image=leodotcloud/swiss-army-knife
-    - --
-    - sleep
-    - 4h
+    - -c
+    - |
+      cat <<EOF > /tmp/k9s-debug-profile.yaml
+      securityContext:
+        runAsNonRoot: false
+        runAsUser: 0
+      EOF
+      kubectl \
+        --kubeconfig=$KUBECONFIG \
+        --context=$CONTEXT \
+        --namespace=$NAMESPACE \
+        debug \
+        $POD \
+        --image=leodotcloud/swiss-army-knife \
+        --custom=/tmp/k9s-debug-profile.yaml \
+        -- \
+        sleep 4h
